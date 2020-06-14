@@ -1,21 +1,23 @@
+
+var socket = io();
+
+socket.on('message', function (message) {
+    displayMessage(message);
+});
+
+
 $(document).ready(function () {
     $("#editor").focus();
 });
 
-$("#editor").on("blur", function() {
-     $("#editor").focus();
+$("#editor").on("blur", function () {
+    $("#editor").focus();
 });
 
 document.getElementById("editor").addEventListener("input", function (event) {
     let editor = $("#editor");
     handleEdit(editor, function () {
-        $.ajax({
-            url: "/submit_message",
-            data: {message: editor.text()},
-            dataType: 'json',
-            type: 'post',
-            success: function() {}
-        });
+        socket.emit("submit", editor.text());
 
         editor.animate(
             {
@@ -52,13 +54,13 @@ function displayMessage(message) {
         {opacity: 1},
         800,
         "swing",
-        function() {
-            setTimeout(function() {
+        function () {
+            setTimeout(function () {
                 messageElement.animate(
                     {opacity: 0},
                     800,
                     "swing",
-                    function() {
+                    function () {
                         messageElement.remove();
                     }
                 )

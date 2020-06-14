@@ -5,6 +5,11 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 
 
+@socketio.on("submit")
+def handle_message(message):
+    socketio.emit("message", message)
+
+
 @app.route('/')
 def hello_world():
     return render_template("index.html")
