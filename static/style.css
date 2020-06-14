@@ -1,0 +1,28 @@
+
+body {
+    background-color: #070708;
+    color: #EBFAD6;
+    font-family: 'Quattrocento', serif;
+    font-weight: 400;
+    width: 100%;
+}
+
+.editable {
+    outline: none;
+}
+
+#editor {
+    font-size: 40pt;
+    margin-top: 5%;
+    margin-left: 5%;
+    word-wrap: break-word;
+}
+
+.messages {
+    font-weight: 700;
+    font-size: 60pt;
+    color: #FFB8BE;
+
+    margin-top: 20%;
+    text-align: center;
+}
