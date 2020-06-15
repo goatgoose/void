@@ -11,10 +11,15 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 void_bot = VoidBot(socketio)
 
+clients = {}  # uuid : ip
+
 
 @socketio.on("register")
 def handle_register():
-    return str(uuid.uuid4())
+    ip = request.remote_addr
+    if ip not in clients:
+        clients[ip] = str(uuid.uuid4())
+    return clients[ip]
 
 
 @socketio.on("submit")
