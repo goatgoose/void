@@ -24,7 +24,8 @@ class VoidBot(discord.Client):
         guild: discord.guild.Guild = self.guilds[0]
         channel: discord.guild.TextChannel = discord.utils.get(guild.channels, name=channel_name)
         if not channel:
-            channel = await guild.create_text_channel(channel_name)
+            category = discord.utils.get(guild.categories, name="mortals")
+            channel = await guild.create_text_channel(channel_name, category=category)
         await channel.send(message)
 
     async def on_ready(self):

@@ -1,15 +1,19 @@
-
 var socket = io();
 
-var id = undefined;
-
-socket.on('connect', function() {
-    socket.emit("register", function(newID) {
-         id = newID;
-        socket.on(id, function(message) {
+socket.on('connect', function () {
+    if (window.localStorage.getItem("id") == null) {
+        socket.emit("register", function (id) {
+            window.localStorage.setItem("id", id);
+            socket.on(id, function (message) {
+                displayMessage(message);
+            });
+        });
+    } else {
+        var id = window.localStorage.getItem("id");
+        socket.on(id, function (message) {
             displayMessage(message);
         });
-    });
+    }
 });
 
 var tts = undefined;
@@ -21,20 +25,9 @@ $(document).ready(function () {
 
     var msg = new SpeechSynthesisUtterance();
     var voices = window.speechSynthesis.getVoices();
-    msg.voice = voices[38]; // Note: some voices don't support altering params
+    msg.voice = voices[38];
     msg.voiceURI = 'native';
-    msg.volume = 1; // 0 to 1
-    msg.rate = 0.5; // 0.1 to 10
-    msg.pitch = 0; //0 to 2
-    msg.text = message;
     msg.lang = 'en-US';
-
-    //tts = new SpeechSynthesisUtterance();
-    // tts.default = false;
-    // tts.volume = 1;
-    // tts.rate = 0.1;
-    // tts.pitch = 0;
-    //tts.lang = "en-US";
 });
 
 $("#editor").on("blur", function () {
@@ -45,7 +38,7 @@ document.getElementById("editor").addEventListener("input", function (event) {
     let editor = $("#editor");
     handleEdit(editor, function () {
         socket.emit("submit", {
-            id: id,
+            id: window.localStorage.getItem("id"),
             message: editor.text()
         });
 
@@ -79,22 +72,22 @@ function handleEdit(element, onEdit) {
 function displayMessage(message) {
     var msg = new SpeechSynthesisUtterance();
     var voices = window.speechSynthesis.getVoices();
-    msg.voice = voices[38]; // Note: some voices don't support altering params
+    msg.voice = voices[38];
     msg.voiceURI = 'native';
     msg.volume = 1; // 0 to 1
     msg.rate = 0.5; // 0.1 to 10
-    msg.pitch = 0; //0 to 2
+    msg.pitch = 0; // 0 to 2
     msg.text = message;
     msg.lang = 'en-US';
-    msg.onend = function(e) {
+    msg.onend = function (e) {
         messageElement.animate(
-                    {opacity: 0},
-                    800,
-                    "swing",
-                    function () {
-                        messageElement.remove();
-                    }
-                )
+            {opacity: 0},
+            800,
+            "swing",
+            function () {
+                messageElement.remove();
+            }
+        )
     };
     window.speechSynthesis.speak(msg);
 
@@ -105,6 +98,7 @@ function displayMessage(message) {
         {opacity: 1},
         800,
         "swing",
-        function () {}
+        function () {
+        }
     )
 }
