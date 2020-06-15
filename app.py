@@ -26,7 +26,7 @@ def hello_world():
 
 
 if __name__ == '__main__':
-    app = threading.Thread(target=socketio.run, args=(app,))
+    app = threading.Thread(target=socketio.run, args=(app, "0.0.0.0", 2000))
     app.start()
 
     void_bot.run(open("discord_token.txt").read().strip())
