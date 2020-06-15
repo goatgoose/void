@@ -1,5 +1,9 @@
 import discord
 import asyncio
+import os
+
+
+TESTING = os.path.exists("testing")
 
 
 class VoidBot(discord.Client):
@@ -24,7 +28,7 @@ class VoidBot(discord.Client):
         guild: discord.guild.Guild = self.guilds[0]
         channel: discord.guild.TextChannel = discord.utils.get(guild.channels, name=channel_name)
         if not channel:
-            category = discord.utils.get(guild.categories, name="mortals")
+            category = discord.utils.get(guild.categories, name="testing" if TESTING else "mortals")
             channel = await guild.create_text_channel(channel_name, category=category)
         await channel.send(message)
 
