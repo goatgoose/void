@@ -12,9 +12,29 @@ socket.on('connect', function() {
     });
 });
 
+var tts = undefined;
+
 
 $(document).ready(function () {
     $("#editor").focus();
+    $("#editor").click();
+
+    var msg = new SpeechSynthesisUtterance();
+    var voices = window.speechSynthesis.getVoices();
+    msg.voice = voices[38]; // Note: some voices don't support altering params
+    msg.voiceURI = 'native';
+    msg.volume = 1; // 0 to 1
+    msg.rate = 0.5; // 0.1 to 10
+    msg.pitch = 0; //0 to 2
+    msg.text = message;
+    msg.lang = 'en-US';
+
+    //tts = new SpeechSynthesisUtterance();
+    // tts.default = false;
+    // tts.volume = 1;
+    // tts.rate = 0.1;
+    // tts.pitch = 0;
+    //tts.lang = "en-US";
 });
 
 $("#editor").on("blur", function () {
@@ -57,16 +77,17 @@ function handleEdit(element, onEdit) {
 }
 
 function displayMessage(message) {
-    var messageElement = $("<div>" + message + "</div>");
-    messageElement.css("opacity", 0);
-    $(".messages").append(messageElement);
-    messageElement.animate(
-        {opacity: 1},
-        800,
-        "swing",
-        function () {
-            setTimeout(function () {
-                messageElement.animate(
+    var msg = new SpeechSynthesisUtterance();
+    var voices = window.speechSynthesis.getVoices();
+    msg.voice = voices[38]; // Note: some voices don't support altering params
+    msg.voiceURI = 'native';
+    msg.volume = 1; // 0 to 1
+    msg.rate = 0.5; // 0.1 to 10
+    msg.pitch = 0; //0 to 2
+    msg.text = message;
+    msg.lang = 'en-US';
+    msg.onend = function(e) {
+        messageElement.animate(
                     {opacity: 0},
                     800,
                     "swing",
@@ -74,7 +95,16 @@ function displayMessage(message) {
                         messageElement.remove();
                     }
                 )
-            }, 2000);
-        }
+    };
+    window.speechSynthesis.speak(msg);
+
+    var messageElement = $("<div>" + message + "</div>");
+    messageElement.css("opacity", 0);
+    $(".messages").append(messageElement);
+    messageElement.animate(
+        {opacity: 1},
+        800,
+        "swing",
+        function () {}
     )
 }
