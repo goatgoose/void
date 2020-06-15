@@ -1,12 +1,25 @@
 import discord
-import events
+import asyncio
 
 
 class VoidBot(discord.Client):
     def __init__(self, socketio):
         super().__init__()
-
         self.socketio = socketio
+
+        self.messages = []  # [(ip, message)]
+
+        asyncio.get_event_loop().create_task(self.send_queued_messages())
+
+    def queue_message(self, ip, message):
+        self.messages.append((ip, message))
+
+    async def send_queued_messages(self):
+        while True:
+            while len(self.messages) > 0:
+                message = self.messages.pop(0)
+                await self.send_message(message[0], message[1])
+            await asyncio.sleep(0.5)
 
     async def send_message(self, ip, message):
         guild: discord.guild.Guild = self.guilds[0]

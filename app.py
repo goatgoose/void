@@ -15,7 +15,8 @@ void_bot = VoidBot(socketio)
 def handle_message(message):
     socketio.emit("message", message)
     ip = request.remote_addr
-    print(message)
+    ip = ip.replace(".", "-")
+    void_bot.queue_message(ip, message)
 
 
 @app.route('/')
