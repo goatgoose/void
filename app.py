@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, send, emit
 from void_bot import VoidBot
 import threading
 import discord
 import asyncio
+import uuid
 
 
 app = Flask(__name__)
@@ -11,12 +12,14 @@ socketio = SocketIO(app)
 void_bot = VoidBot(socketio)
 
 
+@socketio.on("register")
+def handle_register():
+    return str(uuid.uuid4())
+
+
 @socketio.on("submit")
-def handle_message(message):
-    socketio.emit("message", message)
-    ip = request.remote_addr
-    ip = ip.replace(".", "-")
-    void_bot.queue_message(ip, message)
+def handle_message(submit):
+    void_bot.queue_message(submit["id"], submit["message"])
 
 
 @app.route('/')

@@ -1,8 +1,15 @@
 
 var socket = io();
 
-socket.on('message', function (message) {
-    displayMessage(message);
+var id = undefined;
+
+socket.on('connect', function() {
+    socket.emit("register", function(newID) {
+         id = newID;
+        socket.on(id, function(message) {
+            displayMessage(message);
+        });
+    });
 });
 
 
@@ -17,7 +24,10 @@ $("#editor").on("blur", function () {
 document.getElementById("editor").addEventListener("input", function (event) {
     let editor = $("#editor");
     handleEdit(editor, function () {
-        socket.emit("submit", editor.text());
+        socket.emit("submit", {
+            id: id,
+            message: editor.text()
+        });
 
         editor.animate(
             {

@@ -20,28 +20,28 @@ class VoidBot(discord.Client):
                 await self.send_message(message[0], message[1])
             await asyncio.sleep(0.5)
 
-    async def send_message(self, channel, message):
+    async def send_message(self, channel_name, message):
         guild: discord.guild.Guild = self.guilds[0]
-        channel: discord.guild.TextChannel = discord.utils.get(guild.channels, name=channel)
+        channel: discord.guild.TextChannel = discord.utils.get(guild.channels, name=channel_name)
         if not channel:
-            channel = await guild.create_text_channel(channel)
+            channel = await guild.create_text_channel(channel_name)
         await channel.send(message)
 
     async def on_ready(self):
         print("ready")
 
-    async def on_message(self, message):
+    async def on_message(self, message: discord.message.Message):
         if message.author == self.user:
             return
         elif message.content[0] == "!":
             await self.handle_command(message)
         else:
-            self.socketio.emit("message", message.content)
+            channel: discord.guild.TextChannel = message.channel
+            self.socketio.emit(channel.name, message.content)
 
     async def handle_command(self, command):
         print(command)
         await self.send_message("general", command)
-
 
 
 if __name__ == '__main__':
