@@ -85,14 +85,14 @@ function handleMessage(message) {
             }, 1500);
         });
     } else {
-        speakMessage(message);
 
         var messageElement = $("<div>" + message + "</div>");
+        speakMessage(message, messageElement);
         displayElement(messageElement);
     }
 }
 
-function speakMessage(message) {
+function speakMessage(message, messageElement) {
     var msg = new SpeechSynthesisUtterance();
     var voices = window.speechSynthesis.getVoices();
     msg.voice = voices[38];
