@@ -28,3 +28,7 @@ body {
 
     cursor: default;
 }
+.messages a {
+    color: #FF2E62;
+    text-decoration: none;
+}

@@ -5,13 +5,13 @@ socket.on('connect', function () {
         socket.emit("register", function (id) {
             window.localStorage.setItem("id", id);
             socket.on(id, function (message) {
-                displayMessage(message);
+                handleMessage(message);
             });
         });
     } else {
         var id = window.localStorage.getItem("id");
         socket.on(id, function (message) {
-            displayMessage(message);
+            handleMessage(message);
         });
     }
 });
@@ -69,7 +69,30 @@ function handleEdit(element, onEdit) {
     }
 }
 
-function displayMessage(message) {
+function handleMessage(message) {
+    if (message.startsWith("http://") || message.startsWith("https://")) {
+        var messageElement = $("<a href='" + message.split(" ")[0] + "' target='_blank'>" + message + "</a><br>");
+        displayElement(messageElement, function () {
+            setTimeout(function () {
+                messageElement.animate(
+                    {opacity: 0},
+                    800,
+                    "swing",
+                    function () {
+                        messageElement.remove();
+                    }
+                )
+            }, 1500);
+        });
+    } else {
+        speakMessage(message);
+
+        var messageElement = $("<div>" + message + "</div>");
+        displayElement(messageElement);
+    }
+}
+
+function speakMessage(message) {
     var msg = new SpeechSynthesisUtterance();
     var voices = window.speechSynthesis.getVoices();
     msg.voice = voices[38];
@@ -90,8 +113,9 @@ function displayMessage(message) {
         )
     };
     window.speechSynthesis.speak(msg);
+}
 
-    var messageElement = $("<div>" + message + "</div>");
+function displayElement(messageElement, callback) {
     messageElement.css("opacity", 0);
     $(".messages").append(messageElement);
     messageElement.animate(
@@ -99,6 +123,9 @@ function displayMessage(message) {
         800,
         "swing",
         function () {
+            if (callback !== undefined) {
+                callback();
+            }
         }
     )
 }
