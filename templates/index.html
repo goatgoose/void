@@ -12,12 +12,20 @@
 <body>
 
 <div class="container-fluid">
-    <div class="editable" id="editor" contenteditable="true"></div>
-    <div class="messages"></div>
+    <div id="chrome-only" style="visibility: hidden">
+        <h1>Chrome only... <a href="https://www.google.com/chrome">www.google.com/chrome</a></h1>
+    </div>
+
+    <div id="void-content">
+        <div class="editable" id="editor" contenteditable="true"></div>
+        <div class="messages"></div>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
+<script src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+        integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+        crossorigin="anonymous"></script>
 <script src="/static/void.js"></script>
 
 </body>
